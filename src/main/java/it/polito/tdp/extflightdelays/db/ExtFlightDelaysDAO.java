@@ -10,10 +10,37 @@ import java.util.List;
 
 import it.polito.tdp.extflightdelays.model.Airline;
 import it.polito.tdp.extflightdelays.model.Airport;
+import it.polito.tdp.extflightdelays.model.Coppia;
 import it.polito.tdp.extflightdelays.model.Flight;
 
 public class ExtFlightDelaysDAO {
 
+	public List<Coppia> getAereoportiConnessi(){
+		
+		String sql = "SELECT DISTINCT ORIGIN_AIRPORT_ID, DESTINATION_AIRPORT_ID, DISTANCE "
+				+ "FROM flights ";
+		
+		List<Coppia> risultato = new ArrayList<Coppia>();
+		
+		try {
+			Connection conn = ConnectDB.getConnection();
+			PreparedStatement st = conn.prepareStatement(sql);
+			ResultSet rs = st.executeQuery();
+
+			while (rs.next()) {
+				risultato.add(new Coppia(rs.getInt("ORIGIN_AIRPORT_ID"), rs.getInt("DESTINATION_AIRPORT_ID"), rs.getInt("DISTANCE")));
+			}
+			st.close();
+			conn.close();
+			return risultato;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("Errore connessione al database");
+			throw new RuntimeException("Error Connection Database");
+		}
+	}
+	
 	public List<Airline> loadAllAirlines() {
 		String sql = "SELECT * from airlines";
 		List<Airline> result = new ArrayList<Airline>();

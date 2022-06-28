@@ -5,18 +5,35 @@
 package it.polito.tdp.extflightdelays;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.Set;
 
+import org.jgrapht.Graph;
+import org.jgrapht.graph.DefaultEdge;
+import org.jgrapht.graph.DefaultWeightedEdge;
+
+import it.polito.tdp.extflightdelays.model.Airport;
+import it.polito.tdp.extflightdelays.model.ArchiPesati;
 import it.polito.tdp.extflightdelays.model.Model;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 
 public class FXMLController {
 
 	private Model model;
+	
+	@FXML
+    private TableColumn<DefaultWeightedEdge, String> colArchi;
+
+    @FXML
+    private TableColumn<Integer, Integer> colDistanza;
 	
     @FXML // ResourceBundle that was given to the FXMLLoader
     private ResourceBundle resources;
@@ -36,6 +53,23 @@ public class FXMLController {
     @FXML
     void doAnalizzaAeroporti(ActionEvent event) {
     	//TODO
+    	txtResult.clear();
+    	int distanza_minima;
+    	try {
+    		distanza_minima = Integer.parseInt(distanzaMinima.getText());
+    	}catch(NumberFormatException e) {
+    		txtResult.appendText("inserire la distanza minima!");
+    		return;
+    	}
+    	model.creaGrafo(distanza_minima);
+    	int nVertici = model.nVertici();
+    	int nArchi = model.nEdge();
+    	List <ArchiPesati> archiPesati = model.getArchiPesati();
+    	
+    	txtResult.appendText("# VERTICI: "+nVertici+"\n");
+    	txtResult.appendText("# ARCHI: "+nArchi+"\n");
+    	txtResult.appendText("# LISTA ARCHI PESATI: "+archiPesati);
+
     }
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
